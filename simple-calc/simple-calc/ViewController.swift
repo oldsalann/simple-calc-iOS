@@ -18,9 +18,11 @@ class ViewController: UIViewController {
     var usingCount = false
     var usingRegular = false
     @IBAction func btnNumber(_ sender: UIButton) {
+        if (!(usingAvg && sender.currentTitle! == "0")) {
             opUsed = false
             total = total + sender.currentTitle!
             lblNumber.text = total
+        }
     }
     
     @IBAction func btnOp(_ sender: UIButton) {
