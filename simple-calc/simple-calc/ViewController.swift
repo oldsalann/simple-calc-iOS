@@ -14,6 +14,9 @@ class ViewController: UIViewController {
     
     var total = ""
     var opUsed = false
+    var usingAvg = false
+    var usingCount = false
+    var usingRegular = false
     @IBAction func btnNumber(_ sender: UIButton) {
         opUsed = false
         total = total + sender.currentTitle!
@@ -22,9 +25,26 @@ class ViewController: UIViewController {
     
     @IBAction func btnOp(_ sender: UIButton) {
         if (!opUsed) {
+            if (sender.currentTitle! == "avg") {
+                if (!usingRegular && !usingCount) {
+                    usingAvg = true
+                    total = total + " " + sender.currentTitle! + " "
+                    lblNumber.text = total
+                }
+            } else if (sender.currentTitle! == "count") {
+                if (!usingAvg && !usingRegular) {
+                    usingCount = true
+                    total = total + " " + sender.currentTitle! + " "
+                    lblNumber.text = total
+                }
+            } else {
+                if (!usingAvg && !usingCount) {
+                    usingRegular = true
+                    total = total + " " + sender.currentTitle! + " "
+                    lblNumber.text = total
+                }
+            }
             opUsed = true
-            total = total + " " + sender.currentTitle! + " "
-            lblNumber.text = total
         }
     }
     
@@ -78,19 +98,49 @@ class ViewController: UIViewController {
         }
         return String(tot)
     }
+    
     @IBAction func btnPerform(_ sender: Any) {
-        if (!opUsed) {
-            opUsed = false
+        if (usingAvg) { // avg calc
             let array = total.components(separatedBy: " ")
-            let count = 2;
-            var totalNum = performOp(Int(array[0]) ?? 0, array[1], Int(array[2]) ?? 0)
-            for i in 2..<array.count - 1 {
-                if (i % count == 0) {
-                    totalNum = performOp(totalNum, array[i+1], Int(array[i+2]) ?? 0)
+            if (!opUsed) {
+                opUsed = false
+                let count = 2;
+                var runNum = Int(array[0]) ?? 0
+                var div = 1
+                for i in 2..<array.count {
+                    if (i % count == 0) {
+                        div = div + 1
+                        runNum = runNum + (Int(array[i]) ?? 0)
+                    }
                 }
+                let totalNum = runNum / div
+                lblNumber.text = String(totalNum)
+                total = String(totalNum)
+                usingAvg = false
             }
-            lblNumber.text = String(totalNum)
-            total = String(totalNum)
+        } else if (usingCount) { // count calc
+            let array = total.components(separatedBy: " ")
+            if (!opUsed) {
+                usingCount = false
+            }
+        } else { // regular calc
+            let array = total.components(separatedBy: " ")
+            if (!opUsed && array.count > 2) {
+                opUsed = false
+                let count = 2;
+                var totalNum = performOp(Int(array[0]) ?? 0, array[1], Int(array[2]) ?? 0)
+                for i in 2..<array.count - 1 {
+                    if (i % count == 0) {
+                        totalNum = performOp(totalNum, array[i+1], Int(array[i+2]) ?? 0)
+                    }
+                }
+                lblNumber.text = String(totalNum)
+                total = String(totalNum)
+                usingRegular = false
+            }
+        }
+        if (total == "0") {
+            total = ""
         }
     }
 }
