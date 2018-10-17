@@ -18,9 +18,9 @@ class ViewController: UIViewController {
     var usingCount = false
     var usingRegular = false
     @IBAction func btnNumber(_ sender: UIButton) {
-        opUsed = false
-        total = total + sender.currentTitle!
-        lblNumber.text = total
+            opUsed = false
+            total = total + sender.currentTitle!
+            lblNumber.text = total
     }
     
     @IBAction func btnOp(_ sender: UIButton) {
@@ -28,23 +28,25 @@ class ViewController: UIViewController {
             if (sender.currentTitle! == "avg") {
                 if (!usingRegular && !usingCount) {
                     usingAvg = true
+                    opUsed = true
                     total = total + " " + sender.currentTitle! + " "
                     lblNumber.text = total
                 }
             } else if (sender.currentTitle! == "count") {
                 if (!usingAvg && !usingRegular) {
                     usingCount = true
+                    opUsed = true
                     total = total + " " + sender.currentTitle! + " "
                     lblNumber.text = total
                 }
             } else {
                 if (!usingAvg && !usingCount) {
                     usingRegular = true
+                    opUsed = true
                     total = total + " " + sender.currentTitle! + " "
                     lblNumber.text = total
                 }
             }
-            opUsed = true
         }
     }
     
@@ -121,6 +123,16 @@ class ViewController: UIViewController {
         } else if (usingCount) { // count calc
             let array = total.components(separatedBy: " ")
             if (!opUsed) {
+                opUsed = false
+                let count = 2;
+                var runNum = 1
+                for i in 2..<array.count {
+                    if (i % count == 0) {
+                        runNum = runNum + 1
+                    }
+                }
+                lblNumber.text = String(runNum)
+                total = String(runNum)
                 usingCount = false
             }
         } else { // regular calc
